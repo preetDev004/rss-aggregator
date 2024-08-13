@@ -19,16 +19,17 @@ type apiConfig struct{
 }
 
 func connectToDB(dbURL string) *sql.DB{
-	db, err := sql.Open("postgres", os.Getenv(dbURL))
+	connection, err := sql.Open("postgres", os.Getenv(dbURL))
     if err != nil {
         panic(err)
     }
 	fmt.Println("connected to database")
 	
-	return db
+	return connection
 }
 
 func closeDB(db *sql.DB){
+	log.Println("Closing Connection to the Database.")
 	db.Close()
 }
 
@@ -44,8 +45,14 @@ func main() {
 	if dbURL == ""{
 		log.Fatal("Database URL not found!")
 	}
-	db := connectToDB(dbURL)
-	defer closeDB(db)
+	connection := connectToDB(dbURL)
+	// defer closeDB(connection)
+	queries := db.New(connection)
+
+	apiCfg := apiConfig{
+		DB: queries,
+	}
+
 
 	router := chi.NewRouter()
 	router.Use(cors.Handler(cors.Options{
@@ -62,6 +69,7 @@ func main() {
 	// v1Router.HandleFunc("/healthz", handleReadiness) - Open for all requests
 	v1Router.Get("/healthz", handleReadiness) // open for Get requests only
 	v1Router.Get("/error", handleError) // open for Get requests only
+	v1Router.Post("/users", apiCfg.handleCreateUser)
 	router.Mount("/v1",v1Router)
 
 	srv := &http.Server{
