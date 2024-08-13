@@ -4,34 +4,14 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"database/sql"
-	"fmt"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
-	"github.com/preetDev004/rss-aggregator/db"
 	_ "github.com/lib/pq"
+	"github.com/preetDev004/rss-aggregator/db"
 )
 
-type apiConfig struct{
-	DB *db.Queries
-}
-
-func connectToDB(dbURL string) *sql.DB{
-	connection, err := sql.Open("postgres", os.Getenv(dbURL))
-    if err != nil {
-        panic(err)
-    }
-	fmt.Println("connected to database")
-	
-	return connection
-}
-
-func closeDB(db *sql.DB){
-	log.Println("Closing Connection to the Database.")
-	db.Close()
-}
 
 func main() {
 	// Load the environment variables
@@ -45,11 +25,13 @@ func main() {
 	if dbURL == ""{
 		log.Fatal("Database URL not found!")
 	}
-	connection := connectToDB(dbURL)
-	// defer closeDB(connection)
-	queries := db.New(connection)
 
-	apiCfg := apiConfig{
+	// connecting to database
+	connection := connectToDB(dbURL)
+	defer closeDB(connection) // defer closing the database
+
+	queries := db.New(connection) // Create queries from db to query the database
+	apiCfg := apiConfig{ // creating struct.
 		DB: queries,
 	}
 

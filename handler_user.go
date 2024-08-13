@@ -10,6 +10,7 @@ import (
 	"github.com/preetDev004/rss-aggregator/db"
 )
 
+// creating handler for apiConfig struct so we can use queries functions inside the handler. 
 func (apiCfg *apiConfig) handleCreateUser(w http.ResponseWriter, r *http.Request){
 	type parameters struct{
 		Name string `json:"name"`
