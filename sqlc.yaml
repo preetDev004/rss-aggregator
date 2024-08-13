@@ -1,0 +1,8 @@
+version: "2"
+sql:
+  - schema: "sql/schema"  # Directory containing your schema files
+    queries: "sql/queries"  # Directory containing your SQL queries
+    engine: "postgresql"
+    gen:
+      go:
+        out: "db"
