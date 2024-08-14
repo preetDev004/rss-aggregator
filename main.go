@@ -12,7 +12,6 @@ import (
 	"github.com/preetDev004/rss-aggregator/db"
 )
 
-
 func main() {
 	// Load the environment variables
 	godotenv.Load()
@@ -22,7 +21,7 @@ func main() {
 		log.Fatal("No PORT found!")
 	}
 	dbURL := os.Getenv("DB_URL")
-	if dbURL == ""{
+	if dbURL == "" {
 		log.Fatal("Database URL not found!")
 	}
 
@@ -31,10 +30,9 @@ func main() {
 	defer closeDB(connection) // defer closing the database
 
 	queries := db.New(connection) // Create queries from db to query the database
-	apiCfg := apiConfig{ // creating struct.
+	apiCfg := apiConfig{          // creating struct.
 		DB: queries,
 	}
-
 
 	router := chi.NewRouter()
 	router.Use(cors.Handler(cors.Options{
@@ -49,10 +47,14 @@ func main() {
 	// standered practice - nested routing in case you release other versions
 	v1Router := chi.NewRouter()
 	// v1Router.HandleFunc("/healthz", handleReadiness) - Open for all requests
+
 	v1Router.Get("/healthz", handleReadiness) // open for Get requests only
-	v1Router.Get("/error", handleError) // open for Get requests only
+	v1Router.Get("/error", handleError)       // open for Get requests only
+
 	v1Router.Post("/users", apiCfg.handleCreateUser)
-	router.Mount("/v1",v1Router)
+	v1Router.Get("/users", apiCfg.handleGetUser)
+
+	router.Mount("/v1", v1Router) // Mount the nested router to the main one
 
 	srv := &http.Server{
 		Handler: router,
@@ -64,4 +66,3 @@ func main() {
 		log.Fatal("Error running the server: ", err)
 	}
 }
-

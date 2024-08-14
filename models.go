@@ -1,5 +1,5 @@
 // (OPTIONAL - You can avoid this file) - Personal preference
-// This file makes SQLC types to snake-case types when responded in JSON. 
+// This file makes SQLC types to snake-case types when responded in JSON.
 package main
 
 import (
@@ -14,6 +14,7 @@ type User struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	Name      string    `json:"name"`
+	ApiKey    string    `json:"api_key"`
 }
 
 func dbUserToUser(user db.User) User {
@@ -22,5 +23,6 @@ func dbUserToUser(user db.User) User {
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
 		Name:      user.Name,
+		ApiKey:    user.ApiKey,
 	}
 }

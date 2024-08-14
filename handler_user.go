@@ -7,8 +7,10 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/preetDev004/rss-aggregator/auth"
 	"github.com/preetDev004/rss-aggregator/db"
 )
+
 const MIN_CHARS = 2
 const MAX_CHARS = 15
 
@@ -46,4 +48,18 @@ func (apiCfg *apiConfig) handleCreateUser(w http.ResponseWriter, r *http.Request
 		return
 	}
 	respondWithJSON(w, 201, dbUserToUser(user))
+}
+
+func (apiCfg *apiConfig) handleGetUser(w http.ResponseWriter, r *http.Request){
+	apikey, err := auth.GetApiKey(r.Header)
+	if err != nil{
+		respondWithError(w, 403, fmt.Sprintf("Auth error: %v", err))
+		return
+	}
+	user, err := apiCfg.DB.GetUserByApiKey(r.Context(), apikey)
+	if err != nil{
+		respondWithError(w, 400, fmt.Sprintf("couldn't find the user: %v", err))
+		return
+	}
+	respondWithJSON(w, 200, dbUserToUser(user))
 }
