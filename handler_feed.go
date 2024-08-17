@@ -47,16 +47,11 @@ func (apiCfg *apiConfig) handleCreateFeed(w http.ResponseWriter, r *http.Request
 }
 
 func (apiCfg *apiConfig) handleGetAllFeeds(w http.ResponseWriter, r *http.Request){
-	
+
 	dbFeeds, err:=apiCfg.DB.GetAllFeeds(r.Context())
 	if err != nil {
-		respondWithError(w, 404, fmt.Sprintf("No feeds found: %v", err))
+		respondWithError(w, 400, fmt.Sprintf("couldn't get the feeds: %v", err))
 		return
 	}
-	var feeds []Feed
-	for _, f := range dbFeeds{
-		feeds = append(feeds, dbFeedToFeed(f))
-	}
-	respondWithJSON(w, 200, feeds)
-
+	respondWithJSON(w, 200, dbFeedsToFeeds(dbFeeds))
 }
