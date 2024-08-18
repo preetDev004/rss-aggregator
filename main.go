@@ -1,9 +1,11 @@
 package main
 
 import (
+	// "fmt"
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
@@ -29,10 +31,12 @@ func main() {
 	connection := connectToDB(dbURL)
 	defer closeDB(connection) // defer closing the database
 
-	queries := db.New(connection) // Create queries from db to query the database
+	db := db.New(connection) // Create queries from db to query the database
 	apiCfg := apiConfig{          // creating struct.
-		DB: queries,
+		DB: db,
 	}
+	// start scraping the feeds in a saparate go-routine
+	go startScraping(db, 10, time.Minute)
 
 	router := chi.NewRouter()
 	router.Use(cors.Handler(cors.Options{
