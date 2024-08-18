@@ -53,6 +53,8 @@ func main() {
 	v1Router.Post("/feeds", apiCfg.middlewareAuth(apiCfg.handleCreateFeed))
 	v1Router.Get("/feeds", apiCfg.handleGetAllFeeds)
 
+	// feedFollows
+	v1Router.Post("/feedFollow", apiCfg.middlewareAuth(apiCfg.handleCreateFeedFollow))
 	router.Mount("/v1", v1Router) // Mount the nested router to the main one
 
 	srv := &http.Server{
