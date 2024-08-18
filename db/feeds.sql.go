@@ -81,14 +81,3 @@ func (q *Queries) GetAllFeeds(ctx context.Context) ([]Feed, error) {
 	}
 	return items, nil
 }
-
-const isFeedExists = `-- name: IsFeedExists :one
-SELECT EXISTS(SELECT 1 FROM feeds WHERE id = $1)
-`
-
-func (q *Queries) IsFeedExists(ctx context.Context, id uuid.UUID) (bool, error) {
-	row := q.db.QueryRowContext(ctx, isFeedExists, id)
-	var exists bool
-	err := row.Scan(&exists)
-	return exists, err
-}

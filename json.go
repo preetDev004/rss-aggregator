@@ -5,6 +5,9 @@ import (
 	"log"
 	"net/http"
 )
+type successful struct{
+	Msg string `json:"msg"`
+}
 
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	data, err := json.Marshal(payload)

@@ -53,5 +53,9 @@ func (apiCfg *apiConfig) handleGetAllFeeds(w http.ResponseWriter, r *http.Reques
 		respondWithError(w, 400, fmt.Sprintf("couldn't get the feeds: %v", err))
 		return
 	}
+	if dbFeeds == nil{
+		respondWithJSON(w, 200, successful{Msg: "There are no feeds to show you."})
+		return
+	} 
 	respondWithJSON(w, 200, dbFeedsToFeeds(dbFeeds))
 }

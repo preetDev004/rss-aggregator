@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 	"github.com/preetDev004/rss-aggregator/db"
 )
@@ -21,11 +22,6 @@ func (apiCfg *apiConfig) handleCreateFeedFollow(w http.ResponseWriter, r *http.R
 		respondWithError(w, 400, fmt.Sprintf("Error Parsing JSON: %v", err))
 		return
 	}
-	isExists, err := apiCfg.DB.IsFeedExists(r.Context(), params.FeedID)
-	if err != nil || !isExists{
-		respondWithError(w, 400, fmt.Sprintf("Couldn't find the feed with id: %v",params.FeedID))
-		return
-	}
 	feedFollow, err := apiCfg.DB.CreateFeedFollows(r.Context(), db.CreateFeedFollowsParams{
 		ID:        uuid.New(),
 		CreatedAt: time.Now().UTC(),
@@ -34,8 +30,42 @@ func (apiCfg *apiConfig) handleCreateFeedFollow(w http.ResponseWriter, r *http.R
 		UserID:    user.ID,
 	})
 	if err != nil {
-		respondWithError(w, 500, fmt.Sprintf("Error Creating the feed follow: %v", err))
+		respondWithError(w, 400, fmt.Sprintf("Error Creating the feed follow: %v", err))
 		return
 	}
 	respondWithJSON(w, 201, dbFeedFollowToFeedFollow(feedFollow))
+}
+
+func (apiCfg *apiConfig) handleGetUserFeedFollows(w http.ResponseWriter, r *http.Request, user db.User){
+	FeedFollows, err := apiCfg.DB.GetUserFeedFollows(r.Context(), user.ID)
+	if err != nil {
+		respondWithError(w, 400, fmt.Sprintf("Couldn't find any feed follows: %v", err))
+		return
+	}
+	if FeedFollows == nil{
+		respondWithJSON(w, 200, successful{Msg: "You Don't follow any feeds right now!"})
+		return
+	}
+
+	respondWithJSON(w, 200, dbFeedFollowsToFeedFollows(FeedFollows))
+
+}
+func (apiCfg *apiConfig) handleDeleteUserFeedFollow(w http.ResponseWriter, r *http.Request, user db.User){
+	feedFollowIDStr := chi.URLParam(r, "feedFollowID")
+	feedFollowId, err:=uuid.Parse(feedFollowIDStr)
+	if err != nil {
+		respondWithError(w, 400, fmt.Sprintf("Couldn't parse feed follow id: %v", err))
+		return
+	}
+	_, err = apiCfg.DB.DeleteUserFeedFollow(r.Context(),db.DeleteUserFeedFollowParams{
+		FeedID: feedFollowId,
+		UserID: user.ID,
+	})
+	
+	if err != nil {
+		respondWithError(w, 400, fmt.Sprintf("Couldn't delete the feed follows: %v", err))
+		return
+	}
+	
+	respondWithJSON(w, 200, successful{Msg:"Unfollowed the feed, successfully!"})
 }
