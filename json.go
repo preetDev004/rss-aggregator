@@ -32,3 +32,7 @@ func respondWithError(w http.ResponseWriter, code int, msg string) {
 	}
 	respondWithJSON(w, code, errResponse{Error: msg})
 }
+
+func handleRoot(w http.ResponseWriter, r *http.Request){
+	respondWithJSON(w, 200, successful{Msg: "Welcome, Please provide only .xml links as feeds."})
+}

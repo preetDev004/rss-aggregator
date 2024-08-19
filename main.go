@@ -50,9 +50,12 @@ func main() {
 
 	// standered practice - nested routing in case you release other versions
 	v1Router := chi.NewRouter()
+
+	v1Router.Get("/", handleRoot)
 	// user
 	v1Router.Post("/users", apiCfg.handleCreateUser)
 	v1Router.Get("/users", apiCfg.middlewareAuth(apiCfg.handleGetUser))
+
 	// feed
 	v1Router.Post("/feeds", apiCfg.middlewareAuth(apiCfg.handleCreateFeed))
 	v1Router.Get("/feeds", apiCfg.handleGetAllFeeds)

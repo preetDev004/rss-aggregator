@@ -12,7 +12,7 @@ RUN go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 
 ARG DB_URL
 
-RUN goose -dir sql/schema  postgres "${DB_URL}" up
+RUN goose -dir sql/schema postgres "${DB_URL}" up
 
 RUN sqlc generate
 
