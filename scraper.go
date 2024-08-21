@@ -49,36 +49,7 @@ func scrapFeed(database *db.Queries, wg *sync.WaitGroup, feed db.Feed) {
 		return
 	}
 	data := createPostsSlice(rssFeed.Channel.Item, feed.ID)
-	// if err != nil{
-	// 	log.Printf("Failed tocreate csv %v",err)
-	// }
-	// for _, item := range rssFeed.Channel.Item{
 
-	// 	desc := sql.NullString{}
-	// 	if item.Description == ""{
-	// 		desc.String = item.Description
-	// 		desc.Valid = true
-	// 	}
-	// 	pubDate, err:= time.Parse(time.RFC1123Z, item.PubDate)
-	// 	if err != nil{
-	// 		log.Printf("Couldn't parse the published date %v with err %v", item.PubDate, err)
-	// 		continue
-	// 	}
-	// 	_ , err = database.CreatePost(context.Background(), db.CreatePostParams{
-	// 		ID: uuid.New(),
-	// 		CreatedAt: time.Now().UTC(),
-	// 		UpdatedAt: time.Now().UTC(),
-	// 		Title: item.Title,
-	// 		Description: desc,
-	// 		PublishedAt: pubDate,
-	// 		Url: item.Link,
-	// 		FeedID: feed.ID,
-	// 	})
-	// 	if err != nil{
-	// 		log.Printf("Couldn't create the post %v with err %v", item.Title, err)
-	// 		continue
-	// 	}
-	// }
 	conn, err := pgx.Connect(context.Background(), os.Getenv("DB_URL"))
 	if err != nil {
 		log.Fatal(err)

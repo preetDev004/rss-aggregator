@@ -28,15 +28,15 @@ func closeDB(db *sql.DB) {
 	db.Close()
 }
 
-func createPostsSlice(items []RSSItem, feedID uuid.UUID) ([]db.Post) {
+func createPostsSlice(items []RSSItem, feedID uuid.UUID) []db.Post {
 	data := make([]db.Post, len(items))
-
 	for i, item := range items {
 		desc := sql.NullString{
 			String: item.Description,
+			Valid:  true,
 		}
 		if item.Description == "" {
-			desc.Valid = true
+			desc.Valid = false // valid is false if the string is null
 		}
 		pubDate, err := time.Parse(time.RFC1123Z, item.PubDate)
 		if err != nil {
