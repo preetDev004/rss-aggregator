@@ -48,20 +48,21 @@ func dbFeedToFeed(feed db.Feed) Feed {
 }
 func dbFeedsToFeeds(dbFeeds []db.Feed) []Feed {
 	var feeds []Feed
-	for _, feed := range dbFeeds{
+	for _, feed := range dbFeeds {
 		feeds = append(feeds, dbFeedToFeed(feed))
 	}
 	return feeds
 }
 
-type FeedFollow struct{
+type FeedFollow struct {
 	ID        uuid.UUID `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	FeedID    uuid.UUID `json:"feed_id"`
 	UserID    uuid.UUID `json:"user_id"`
 }
-func dbFeedFollowToFeedFollow(dbFeedFollow db.FeedFollow) FeedFollow{
+
+func dbFeedFollowToFeedFollow(dbFeedFollow db.FeedFollow) FeedFollow {
 	return FeedFollow{
 		ID:        dbFeedFollow.ID,
 		CreatedAt: dbFeedFollow.CreatedAt,
@@ -70,10 +71,41 @@ func dbFeedFollowToFeedFollow(dbFeedFollow db.FeedFollow) FeedFollow{
 		UserID:    dbFeedFollow.UserID,
 	}
 }
-func dbFeedFollowsToFeedFollows(dbFeedFollows []db.FeedFollow) []FeedFollow{
+func dbFeedFollowsToFeedFollows(dbFeedFollows []db.FeedFollow) []FeedFollow {
 	var feedFollows []FeedFollow
-	for _, feedFollow := range dbFeedFollows{
+	for _, feedFollow := range dbFeedFollows {
 		feedFollows = append(feedFollows, dbFeedFollowToFeedFollow(feedFollow))
 	}
 	return feedFollows
+}
+
+type Post struct {
+	ID          uuid.UUID      `json:"id"`
+	CreatedAt   time.Time      `json:"created_at"`
+	UpdatedAt   time.Time      `json:"updated_at"`
+	Title       string         `json:"title"`
+	Description *string `json:"description"`
+	PublishedAt time.Time      `json:"publushed_at"`
+	Url         string         `json:"url"`
+	FeedID      uuid.UUID      `json:"feed_id"`
+}
+
+func dbPostToPost(dbPost db.GetPostsForUserRow) Post {
+	return Post{
+		ID:          dbPost.ID,
+		CreatedAt:   dbPost.CreatedAt,
+		UpdatedAt:   dbPost.UpdatedAt,
+		Title:       dbPost.Title,
+		Description: &dbPost.Description.String,
+		PublishedAt: dbPost.PublishedAt,
+		Url:         dbPost.Url,
+		FeedID:      dbPost.FeedID,
+	}
+}
+func dbPostsToPosts(dbPosts []db.GetPostsForUserRow) []Post {
+	var posts []Post
+	for _, post := range dbPosts {
+		posts = append(posts, dbPostToPost(post))
+	}
+	return posts
 }

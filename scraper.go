@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"strings"
 	// "fmt"
 	"os"
 
@@ -65,7 +66,7 @@ func scrapFeed(database *db.Queries, wg *sync.WaitGroup, feed db.Feed) {
 			return []interface{}{data[i].ID, data[i].CreatedAt, data[i].UpdatedAt, data[i].Title, data[i].Description, data[i].Url, data[i].PublishedAt, data[i].FeedID}, nil
 		}),
 	)
-	if err != nil {
+	if err != nil && !strings.Contains(err.Error(), "duplicate key"){
 		log.Printf("Couldn't create the posts %v", err)
 	}
 

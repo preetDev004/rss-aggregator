@@ -65,6 +65,9 @@ func main() {
 	v1Router.Get("/feedFollow", apiCfg.middlewareAuth(apiCfg.handleGetUserFeedFollows))
 	v1Router.Delete("/feedFollow/{feedFollowID}", apiCfg.middlewareAuth(apiCfg.handleDeleteUserFeedFollow))
 
+	// posts
+	v1Router.Get("/posts", apiCfg.middlewareAuth(apiCfg.handleGetPosts))
+
 	router.Mount("/v1", v1Router) // Mount the nested router to the main one
 
 	srv := &http.Server{
