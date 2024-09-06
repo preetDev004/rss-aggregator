@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"time"
-
 	"github.com/google/uuid"
 	"github.com/preetDev004/rss-aggregator/db"
 )

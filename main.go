@@ -1,7 +1,6 @@
 package main
 
 import (
-	// "fmt"
 	"log"
 	"net/http"
 	"os"
@@ -75,6 +74,7 @@ func main() {
 		Addr:    ":" + port,
 	}
 	log.Printf("Starting server on port: %v", port)
+
 	err := srv.ListenAndServe()
 	if err != nil {
 		log.Fatal("Error running the server: ", err)

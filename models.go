@@ -1,5 +1,7 @@
 // (OPTIONAL - You can avoid this file) - Personal preference
 // This file makes SQLC types to snake-case types when responded in JSON.
+// used to send only that much feilds which are required in response.
+
 package main
 
 import (

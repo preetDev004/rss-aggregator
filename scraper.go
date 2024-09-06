@@ -3,17 +3,12 @@ package main
 import (
 	"context"
 	"strings"
-	// "fmt"
 	"os"
-
-	// "database/sql"
 	"log"
 	"sync"
 	"time"
 
 	"github.com/jackc/pgx/v4"
-
-	// "github.com/google/uuid"
 	"github.com/preetDev004/rss-aggregator/db"
 )
 
